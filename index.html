@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Snake Addition!</title>
+<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+<script src="snake-js.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+	// If you are using jQuery, use < $(document).ready(function(){ ... }) > instead
+	document.addEventListener("DOMContentLoaded", function(){
+
+		var startButton = document.getElementById("btnStart");
+
+		startButton.addEventListener("click", function(){
+
+			var radioArray = document.getElementById('diffForm').diff;
+			var diffValue;
+			console.log("hello");
+			for (i=0; i < radioArray.length; i++){
+			   if (radioArray[i].checked){
+			      diffValue = radioArray[i].value;
+			      break;
+			   }
+			}
+
+			// The DOM-element which will hold the playfield
+			// If you are using jQuery, you can use < var element = $("#parent"); > instead
+			var parentElement = document.getElementById("parent");
+
+			// User defined settings overrides default settings.
+			// See snake-js.js for all available options.
+			var settings = {
+				    frameInterval : 120,
+				    difficulty: parseInt(diffValue,10)
+			};
+
+			//Hide start menu
+			var startMenu = document.getElementById('startMenu');
+			startMenu.style.visibility = 'hidden';
+			startMenu.style.display = 'none';
+
+			// Create the game object. The settings object is NOT required.
+			// The parentElement however is required
+			var game = new SnakeJS(parentElement, settings);
+		});
+		
+
+	}, true);
+
+</script>
+	<style>
+		#container {
+		    margin-left: auto;
+		    margin-right: auto;
+            min-height: 500px;
+		    width: 720px;
+		    background-color: #b0e0e6;
+			}
+	</style>
+</head>
+
+<body>
+
+	<div id="container">
+		<h1>Snake Addition!</h1>
+
+		<div id="parent">
+			<div id="startMenu">
+				<a id="btnStart" class="pure-button" href="#">Start!</a>
+				<form id="diffForm" class="pure-form">
+
+				    <label for="option-one" class="pure-radio">
+				        <input id="option-one" type="radio" name="diff" value="1" checked />
+				        4 + 6 = 10
+				    </label>
+
+				    <label for="option-two" class="pure-radio">
+				        <input id="option-two" type="radio" name="diff" value="2" />
+				        14 + 6 = 20
+				    </label>
+
+				    <label for="option-three" class="pure-radio">
+				        <input id="option-three" type="radio" name="diff" value="3" />
+				        5 + 2 + 3 = 10
+				    </label>
+
+				</form>
+			</div>
+		</div>
+
+        <section style="float:right;display:block;">
+            <p>
+                <strong>Use the arrow keys to control the snake.</strong>
+            </p>
+            <img id="arrowKeys" src="img/arrow_keys.png" />
+        </section>
+		
+
+		<p>
+		Made by <a href="http://betamos.se/">Didrik Nordström</a>.
+		<br />
+		For more information, see the <a href="../README.md">README file</a>.
+		</p>
+
+	</div>
+    <div style="visibility:hidden; display:none;">
+        <img id="candyImg" src="img/leafSprite.png" />
+        <img id="branchImg" src="img/numberBranch.png" />
+        <img id="goalImg" src="img/goalLeaf.png" />
+        <img id="caterNeutral" src="img/caterNeutral.png" />
+        <img id="caterSad" src="img/caterSad.png" />
+        <img id="caterHappy" src="img/caterHappy.png" />
+    </div>
+
+</body>
+
+</html>
