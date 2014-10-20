@@ -131,6 +131,7 @@ function SnakeJS(parentElement, config){
 			view.initPlayField();
 			drawCurrentScene();
 			inputInterface.startListening();
+			view.playBgAudio();
 			currentState = constants.STATE_READY;
 			
 		};
@@ -201,6 +202,7 @@ function SnakeJS(parentElement, config){
 
 		// Calculates what the next frame will be like and draws it.
 		var nextFrame = function(){
+		    var vClearCandy = false;
 
 			// If the snake can't be moved in the desired direction due to collision
 			if (!moveSnake(inputInterface.lastDirection())) {
@@ -214,6 +216,8 @@ function SnakeJS(parentElement, config){
 					snake.alive = false;
 					// Draw the dead snake
 					drawCurrentScene();
+				    // Play sad music
+					view.playFailAudio();
 					// And play game over scene
 					gameOver();
 					return;
@@ -233,19 +237,42 @@ function SnakeJS(parentElement, config){
 						// win
 					    score += 10;
 					    score += bonusPoints();
+					    vClearCandy  = true;
+					    view.playWinAudio();
+					    view.setCaterStatus(2); //happy
 					    setTimeout(function () {
+					        view.setCaterStatus(0); //neutral
 					        engine.initRound();
 					    }, 1000);
 					}
 					else if (count > target){
-						// lose
-						score -= 5;
-						engine.initRound();						
-					}
-				}
-			});
+					    // lose
+					    if (score > 4) {
+					        score -= 5;
+					    }
+					    vClearCandy = true;
+					    view.playFailAudio();
+					    view.setCaterStatus(1); //sad
+					    setTimeout(function () {
+					        view.setCaterStatus(0); //neutral
+					        engine.initRound();						
+					    }, 1000);
+					} //else if
+				} // if snake hits a candy
+			}); //candy.foreach
 			
 			drawCurrentScene();
+
+			if (vClearCandy) {
+			    clearCandy();
+			}
+
+			function clearCandy() {
+			    var length = candy.length;
+			    while(length--){
+			        candy.splice(length, 1);
+			    }
+			}
 		};
 
 		var bonusPoints = function () {
@@ -295,6 +322,10 @@ function SnakeJS(parentElement, config){
 				return false;
 			}
 
+			if (snake.direction != newDirection) {
+			    view.playDirectionAudio();
+			}
+
 			snake.direction = newDirection;
 			snake.points.unshift(newHead);
 
@@ -310,6 +341,7 @@ function SnakeJS(parentElement, config){
 			count += candy.score;
 			highScore = Math.max(score, highScore);
 			snake.growthLeft += candy.calories;
+			view.playEatAudio();
 		};
 
 		var randomCandy = function(value) {
@@ -645,15 +677,33 @@ function SnakeJS(parentElement, config){
 			candyImg,			// Leaf image for candy
             branchImg,          // Branch image for score
             goalImg,            // Leaf image for goal progress
-            caterImgs,          // Caterpiller images
+            failAudio,          // Audio clip for doing something wrong
+            winAudio,           // Audio clip for doing something correct
+            eatAudio,           // Audio clip for eating candy
+            bgAudio,            // Background Audio
+            moveDirectionAudio, // Audio clip for changing directions
+            caterImgs = new Array(),          // Caterpiller images
+            caterWidth = 225,   // Caterpiller image width
+            caterHeight = 150,   // Caterpiller image height
+            caterStatus = 0,        // Status of Caterpiller image (happy,sad,neutral)
 			ctx,				// The canvas context
 			snakeThickness;		// The thickness of the snake in pixels
 
-			//Load Images
-		    candyImg = document.getElementById('candyImg');
-		    branchImg = document.getElementById('branchImg');
-		    goalImg = document.getElementById('goalImg');
-		    caterImgs = document.getElementById('goalImg');
+		//Load Images
+		candyImg = document.getElementById('candyImg');
+		branchImg = document.getElementById('branchImg');
+		goalImg = document.getElementById('goalImg');
+		caterImgs[0] = document.getElementById('caterNeutral');
+		caterImgs[1] = document.getElementById('caterSad');
+		caterImgs[2] = document.getElementById('caterHappy');
+
+	    //Load Audio Clips
+		moveDirectionAudio = document.getElementById('moveDirectionAudio');
+		winAudio = document.getElementById('winAudio');
+		failAudio = document.getElementById('failAudio');
+		eatAudio = document.getElementById('eatAudio');
+		bgAudio = document.getElementById('bgAudio');
+		bgAudio.loop = true;
 
 		this.initPlayField = function(){
 			snakeThickness = length(0.9);
@@ -753,6 +803,13 @@ function SnakeJS(parentElement, config){
 			}
 		};
 
+		this.getCaterStatus = function () {
+		    return caterStatus;
+		};
+
+		this.setCaterStatus = function (newStatus) {
+		    caterStatus = newStatus;
+		};
 
 		this.drawScore = function (score, highScore, target, count) {
 			// Translate to 0, 0 to draw from origo
@@ -773,6 +830,14 @@ function SnakeJS(parentElement, config){
 			if (branchImg.complete == true) {
 			    ctx.drawImage(branchImg, 0, constants.SCOREBOARD_HEIGHT - constants.BRANCH_HEIGHT, config.pointSize * config.gridWidth, constants.BRANCH_HEIGHT);
 			}
+
+		    //Draw Caterpiller Icon
+		    //Default to neutral
+			if (caterStatus > 2 || caterStatus < 0) {
+			    caterStatus = 0;
+			}
+			ctx.drawImage(caterImgs[caterStatus], ((config.gridWidth * config.pointSize) / 2) - (caterWidth / 2), -20, caterWidth, caterHeight);
+
 
 		    // Draw goal leaf
 			if (goalImg.complete == true) {
@@ -814,7 +879,7 @@ function SnakeJS(parentElement, config){
 		    // Draw high score in the upper left corner
 			ctx.textAlign = "left";
 			ctx.fillText(highScore, horizontalMargin, topMargin);
-            
+
 			// Translate back
 			ctx.translate(0, constants.SCOREBOARD_HEIGHT);
 		};
@@ -913,6 +978,26 @@ function SnakeJS(parentElement, config){
 			// only connects the lines, the drawing is handled outside this method
 			ctx.lineTo(p2Position.left, p2Position.top);
 		};
+
+		this.playDirectionAudio = function(){
+		    moveDirectionAudio.play();
+		}
+
+		this.playWinAudio = function () {
+		    winAudio.play();
+		}
+
+		this.playFailAudio = function () {
+		    failAudio.play();
+		}
+
+		this.playEatAudio = function () {
+		    eatAudio.play();
+		}
+
+		this.playBgAudio = function () {
+		    bgAudio.play();
+		}
 	}
 
 	/**
