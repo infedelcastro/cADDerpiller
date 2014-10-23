@@ -39,6 +39,12 @@
 			var startMenu = document.getElementById('startMenu');
 			startMenu.style.visibility = 'hidden';
 			startMenu.style.display = 'none';
+			
+			//hide start menu graphics/extend boarder
+			var container = document.getElementById('container');
+			container.style.backgroundImage = 'none';
+			container.style.width = '720px'; 
+			container.style.height = '990px'; 
 
 			// Create the game object. The settings object is NOT required.
 			// The parentElement however is required
@@ -50,58 +56,90 @@
 
 </script>
 	<style>
+		body {
+			background-color: #8ec466;
+		}
+		.pure-button {
+			background-color: transparent;
+		}
+		#playScrn {
+			position: relative;
+			left: auto;
+			right: auto;
+		}
 		#container {
+			border: 2px solid;
+  			border-radius: 25px;
+			position: relative;
 		    margin-left: auto;
 		    margin-right: auto;
-            min-height: 500px;
-		    width: 720px;
-		    background-color: #b0e0e6;
+            height: 800px;
+		    width: 600px;
+    		background: url(img/titleScreen.png);
+    		background-repeat: no-repeat;
 			}
+		#titleScreen {
+			z-index: -1;
+			position: absolute;
+			left: 25%;
+		}
+		#diffForm {
+			position: relative;
+			left: 50px; 
+		}
+        #infoBlock{
+            position:relative;
+            display:block;
+		    margin-left: auto;
+		    margin-right: auto;
+		    width: 300px;
+            padding-left:50px;
+        }
 	</style>
 </head>
 
-<body>
-
+<body id="playScrn">
+	<!--<img id="titleScreen" src="img/titleScreen.png" alt="titleScreen.png"> -->
 	<div id="container">
-		<h1>Snake Addition!</h1>
-
+		
+		<h1>cADDipillar</h1>
+<!--need to adjust height and width of buttons-->
 		<div id="parent">
 			<div id="startMenu">
-				<a id="btnStart" class="pure-button" href="#">Start!</a>
+				<a id="btnStart" class="pure-button" href="#"><img src="img/gobtn.png" id="btnImg" /></a>
 				<form id="diffForm" class="pure-form">
 
 				    <label for="option-one" class="pure-radio">
 				        <input id="option-one" type="radio" name="diff" value="1" checked />
-				        4 + 6 = 10
+				        <img src="img/4+6=10btn.png" alt="4 + 6 = 10" height="80px" width="140px">
 				    </label>
 
 				    <label for="option-two" class="pure-radio">
 				        <input id="option-two" type="radio" name="diff" value="2" />
-				        14 + 6 = 20
+				        <img src="img/14+6=20btn.png" alt="14 + 6 = 20" height="80px" width="140px">
 				    </label>
 
 				    <label for="option-three" class="pure-radio">
 				        <input id="option-three" type="radio" name="diff" value="3" />
-				        5 + 2 + 3 = 10
+				        <img src="img/5+2+3=10btn.png" alt="5 + 2 + 3 = 10" height="80px" width="140px">
 				    </label>
 
 				</form>
 			</div>
 		</div>
 
-        <section style="float:right;display:block;">
+        <section id="infoBlock">
             <p>
                 <strong>Use the arrow keys to control the snake.</strong>
             </p>
-            <img id="arrowKeys" src="img/arrow_keys.png" />
+            <img id="arrowKeys" src="img/arrow_keys.png" width="200px" height="125px" />
+            <p>
+                Based off of Snake-JS by <a href="http://betamos.se/">Didrik Nordström</a>.
+            </p>
         </section>
 		
 
-		<p>
-		Made by <a href="http://betamos.se/">Didrik Nordström</a>.
-		<br />
-		For more information, see the <a href="../README.md">README file</a>.
-		</p>
+		
 
 	</div>
     <div style="visibility:hidden; display:none;">

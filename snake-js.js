@@ -261,6 +261,9 @@ function SnakeJS(parentElement, config){
 				} // if snake hits a candy
 			}); //candy.foreach
 			
+            //update high score before drawing
+			highScore = Math.max(score, highScore);
+
 			drawCurrentScene();
 
 			if (vClearCandy) {
@@ -339,7 +342,7 @@ function SnakeJS(parentElement, config){
 
 		var eatCandy = function(candy){
 			count += candy.score;
-			highScore = Math.max(score, highScore);
+			//highScore = Math.max(score, highScore);
 			snake.growthLeft += candy.calories;
 			view.playEatAudio();
 		};
