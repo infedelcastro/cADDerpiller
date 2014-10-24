@@ -11,10 +11,10 @@
 	document.addEventListener("DOMContentLoaded", function(){
 
 		var startButton = document.getElementById("btnStart");
+		var radioArray = document.getElementById('diffForm').diff;
 
 		startButton.addEventListener("click", function(){
 
-			var radioArray = document.getElementById('diffForm').diff;
 			var diffValue;
 			console.log("hello");
 			for (i=0; i < radioArray.length; i++){
@@ -50,6 +50,35 @@
 			// The parentElement however is required
 			var game = new SnakeJS(parentElement, settings);
 		});
+
+		for (i = 0; i < radioArray.length; i++) {
+		    radioArray[i].addEventListener("change", function (e) {
+		        updateDirections();
+		    });
+		}
+
+		function updateDirections() {
+		    var selected;
+		    var diffNum = document.getElementById('diffNum');
+
+		    for (i = 0; i < radioArray.length; i++) {
+		        if (radioArray[i].checked) {
+		            selected = radioArray[i].value;
+		            break;
+		        }
+		    }
+		    switch (selected) {
+		        case "1":
+		            diffNum.innerHTML = "10";
+		            break;
+		        case "2":
+		            diffNum.innerHTML = "20";
+		            break;
+		        case "3":
+		            diffNum.innerHTML = "10";
+		            break;
+		    }
+		}
 		
 
 	}, true);
@@ -95,6 +124,9 @@
 		    width: 300px;
             padding-left:50px;
         }
+        .noMargin{
+            margin:0;
+        }
 	</style>
 </head>
 
@@ -129,11 +161,14 @@
 		</div>
 
         <section id="infoBlock">
-            <p>
-                <strong>Use the arrow keys to control the snake.</strong>
-            </p>
-            <img id="arrowKeys" src="img/arrow_keys.png" width="200px" height="125px" />
-            <p>
+            <article id="directions">
+                <ul class="noMargin">
+                    <li>Eat leaves until you reach <span id="diffNum">10</span></li>
+                    <li>Use the arrow keys to move the cADDerpiller.</li>
+                </ul>
+                <img id="arrowKeys" src="img/arrow_keys.png" height="150" width="200"/>
+            </article>
+            <p class="noMargin">
                 Based off of Snake-JS by <a href="http://betamos.se/">Didrik Nordström</a>.
             </p>
         </section>
