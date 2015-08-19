@@ -658,7 +658,6 @@ function SnakeJS(parentElement, config){
 				else
 					merged[key] = master[key];
 			}
-			console.log(merged);
 			return merged;
 		};
 
